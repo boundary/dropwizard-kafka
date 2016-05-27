@@ -42,7 +42,7 @@ suport filesystem and resource configuration
 upgrade to kafka 0.10
 support kafka-streams
 report health + metrics 
-
+expose /connect uri
 
 # LICENSE
 
