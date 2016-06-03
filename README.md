@@ -8,7 +8,7 @@ and wraps them into a dropwizard-friendly configuration format, and hooks into t
 # usage
 
 
-.. reference the project (until this is published to maven central, you will need to clone this repo and run `mvn install`)
+.. reference the project
 
 ```
         <dependency>
@@ -37,12 +37,12 @@ and wraps them into a dropwizard-friendly configuration format, and hooks into t
 
 # todo
 
-publish to mvn central
-suport filesystem and resource configuration
-upgrade to kafka 0.10
-support kafka-streams
-report health + metrics 
-expose /connect uri
+[x] publish to mvn central
+[ ] support filesystem and resource configuration
+[ ] upgrade to kafka 0.10
+[ ] support kafka-streams
+[ ] report health + metrics 
+[ ] expose /connect uri
 
 # LICENSE
 

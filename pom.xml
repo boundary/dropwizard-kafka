@@ -23,7 +23,13 @@
         <kafka.connect.version>0.9.0.1</kafka.connect.version>
     </properties>
 
-
+    <developers>
+        <developer>
+            <id>gjesse</id>
+            <name>Jesse Hodges</name>
+            <email>jesse_hodges@bmc.com</email>
+        </developer>
+    </developers>
 
     <dependencyManagement>
         <dependencies>
@@ -129,7 +135,6 @@
                 <version>${kotlin.version}</version>
             </dependency>
 
-
         </dependencies>
     </dependencyManagement>
 
@@ -213,4 +218,22 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+
+    <scm>
+        <url>https://github.com/boundary/dropwizard-kafka</url>
+        <connection>scm:git:ssh://git@github.com/boundary/dropwizard-kafka.git</connection>
+        <developerConnection>scm:git:git@github.com:boundary/dropwizard-kafka.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 </project>
