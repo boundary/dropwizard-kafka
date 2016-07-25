@@ -2,6 +2,7 @@ package com.bmc.dropwizard.connect
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.common.io.Resources
+import com.google.common.net.HostAndPort
 import io.dropwizard.setup.Environment
 import org.apache.kafka.common.utils.Utils
 import org.apache.kafka.connect.runtime.WorkerConfig
@@ -15,6 +16,8 @@ class ConnectConfiguration {
     enum class MODE {
         standalone, distributed
     }
+
+    val defaultPort = 9992
 
     @JsonProperty
     var mode = MODE.standalone
@@ -30,6 +33,9 @@ class ConnectConfiguration {
             "kafka-connect/connector.properties"
     )
 
+    @JsonProperty
+    var bootstrapServers: List<HostAndPort> = listOf();
+
     fun connectorConfigs(): List<Map<String, String>> {
         return connectorProps
                 .map { resourceAsProperties(it) }
@@ -38,6 +44,14 @@ class ConnectConfiguration {
 
     fun workerConfig(): WorkerConfig {
         val p = resourceAsProperties(workerProps)
+        if (bootstrapServers.isNotEmpty()) {
+            val servers = bootstrapServers
+                .map {
+                    val port = it.getPortOrDefault(defaultPort)
+                    "${it.hostText}:$port"
+                }.joinToString(",")
+            p.put("bootstrap.servers", servers)
+        }
         return when (mode) {
             MODE.standalone -> StandaloneConfig(p)
             MODE.distributed -> DistributedConfig(p)
@@ -50,7 +64,7 @@ class ConnectConfiguration {
         return embedded;
     }
 
-    private fun resourceAsProperties(resourceName: String): Map<String, String> {
+    private fun resourceAsProperties(resourceName: String): MutableMap<String, String> {
         val url = Resources.getResource(resourceName)
         val p = Properties()
         p.load(url.openStream())
