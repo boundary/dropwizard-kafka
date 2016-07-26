@@ -28,6 +28,13 @@ class ConnectConfiguration {
     var mode = MODE.standalone
 
     @JsonProperty
+    var restPort: Int? = null;
+
+    @JsonProperty
+    var restHost: String? = null;
+
+
+    @JsonProperty
     @NotEmpty
     var workerProps = "kafka-connect/${mode}.worker.properties"
 
@@ -57,6 +64,18 @@ class ConnectConfiguration {
                 }.joinToString(",")
             p.put("bootstrap.servers", servers)
         }
+
+        with(restHost){
+            if (this != null) {
+                p.put("rest.host", this)
+            }
+        }
+        with(restPort) {
+            if (this != null) {
+                p.put("rest.port", this.toString())
+            }
+        }
+
         return when (mode) {
             MODE.standalone -> StandaloneConfig(p)
             MODE.distributed -> DistributedConfig(p)
@@ -64,7 +83,7 @@ class ConnectConfiguration {
     }
 
     fun createConnector(environment: Environment): ConnectEmbedded {
-        var embedded = ConnectEmbedded(workerConfig(), connectorConfigs())
+        val embedded = ConnectEmbedded(workerConfig(), connectorConfigs())
         environment.lifecycle().manage(embedded)
 
         wireRestAPI(environment, embedded.herder)
