@@ -67,7 +67,7 @@ class ConnectConfiguration {
 
         with(restHost){
             if (this != null) {
-                p.put("rest.host", this)
+                p.put("rest.host.name", this)
             }
         }
         with(restPort) {
