@@ -5,8 +5,13 @@ import com.google.common.io.Resources
 import com.google.common.net.HostAndPort
 import io.dropwizard.setup.Environment
 import org.apache.kafka.common.utils.Utils
+import org.apache.kafka.connect.runtime.Herder
 import org.apache.kafka.connect.runtime.WorkerConfig
 import org.apache.kafka.connect.runtime.distributed.DistributedConfig
+import org.apache.kafka.connect.runtime.rest.errors.ConnectExceptionMapper
+import org.apache.kafka.connect.runtime.rest.resources.ConnectorPluginsResource
+import org.apache.kafka.connect.runtime.rest.resources.ConnectorsResource
+import org.apache.kafka.connect.runtime.rest.resources.RootResource
 import org.apache.kafka.connect.runtime.standalone.StandaloneConfig
 import org.hibernate.validator.constraints.NotEmpty
 import java.util.*
@@ -61,7 +66,22 @@ class ConnectConfiguration {
     fun createConnector(environment: Environment): ConnectEmbedded {
         var embedded = ConnectEmbedded(workerConfig(), connectorConfigs())
         environment.lifecycle().manage(embedded)
+
+        wireRestAPI(environment, embedded.herder)
+
         return embedded;
+    }
+
+    private fun wireRestAPI(environment: Environment, herder: Herder) {
+        // TODO enable cors support
+        // also to consider: host these resources under a configurable path
+        // or maybe host them on the admin connector
+
+        environment.jersey().register(RootResource::class.java)
+        environment.jersey().register(ConnectorsResource(herder))
+        environment.jersey().register(ConnectorPluginsResource(herder))
+        environment.jersey().register(ConnectExceptionMapper::class.java)
+
     }
 
     private fun resourceAsProperties(resourceName: String): MutableMap<String, String> {

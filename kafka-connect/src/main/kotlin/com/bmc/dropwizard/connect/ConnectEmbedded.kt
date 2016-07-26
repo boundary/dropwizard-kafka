@@ -12,15 +12,18 @@ import org.apache.kafka.connect.runtime.distributed.DistributedHerder
 import org.apache.kafka.connect.runtime.rest.entities.ConnectorInfo
 import org.apache.kafka.connect.runtime.standalone.StandaloneHerder
 import org.apache.kafka.connect.storage.FileOffsetBackingStore
+import org.apache.kafka.connect.storage.KafkaConfigBackingStore
 import org.apache.kafka.connect.storage.KafkaOffsetBackingStore
+import org.apache.kafka.connect.storage.KafkaStatusBackingStore
 import org.apache.kafka.connect.util.FutureCallback
 import org.slf4j.LoggerFactory
-import java.util.*
+import java.net.URI
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.ws.rs.core.UriBuilder
 
 /**
  * This is only a temporary extension to Kafka Connect runtime until there is an Embedded API as per KIP-26
@@ -32,24 +35,40 @@ class ConnectEmbedded @Throws(Exception::class)
 constructor(workerConfig: WorkerConfig, private val connectorConfigs: List<Map<String, String>>) : Managed {
 
     private val worker: Worker
-    private val herder: Herder
+    val herder: Herder
     private val startLatch = CountDownLatch(1)
     private val shutdown = AtomicBoolean(false)
     private val stopLatch = CountDownLatch(1)
 
     init {
 
+       // worker id
+        val advertisedUrl = advertisedUrl(workerConfig)
+        val workerId: String = advertisedUrl.host + ":" + advertisedUrl.port
+
+        val time = SystemTime()
         if (workerConfig is DistributedConfig) {
             // if distributed.. could also use File/Memory OffsetBackingStore
+
             val offsetBackingStore = KafkaOffsetBackingStore()
-            offsetBackingStore.configure(workerConfig.originalsStrings())
-            worker = Worker(workerConfig, offsetBackingStore)
-            herder = DistributedHerder(workerConfig, worker, "/connect")
+            offsetBackingStore.configure(workerConfig)
+
+            worker = Worker(workerId, time, workerConfig, offsetBackingStore)
+
+            val statusBackingStore = KafkaStatusBackingStore(time, worker.internalValueConverter)
+            statusBackingStore.configure(workerConfig)
+
+            val configBackingStore = KafkaConfigBackingStore(worker.internalValueConverter)
+            configBackingStore.configure(workerConfig)
+
+            // TODO fix url pass in from dw config
+            herder = DistributedHerder(workerConfig, time, worker, statusBackingStore, configBackingStore, advertisedUrl.toString())
+
         } else {
 
             val offsetBackingStore = FileOffsetBackingStore()
-            offsetBackingStore.configure(workerConfig.originalsStrings())
-            worker = Worker(workerConfig, offsetBackingStore)
+            offsetBackingStore.configure(workerConfig)
+            worker = Worker(workerId, time, workerConfig, offsetBackingStore)
             herder = StandaloneHerder(worker)
         }
     }
@@ -103,5 +122,24 @@ constructor(workerConfig: WorkerConfig, private val connectorConfigs: List<Map<S
     companion object {
         private val log = LoggerFactory.getLogger(ConnectEmbedded::class.java)
         private val REQUEST_TIMEOUT_MS = 120000
+    }
+
+    fun advertisedUrl(config: WorkerConfig): URI {
+
+        val hostname = config.getString(WorkerConfig.REST_HOST_NAME_CONFIG)
+        val port = config.getInt(WorkerConfig.REST_PORT_CONFIG)
+
+        val uri: URI = URI("http://$hostname:$port")
+        val builder = UriBuilder.fromUri(uri)
+
+        val advertisedHostname = config.getString(WorkerConfig.REST_ADVERTISED_HOST_NAME_CONFIG)
+        if (advertisedHostname != null && !advertisedHostname.isEmpty())
+            builder.host(advertisedHostname)
+        val advertisedPort = config.getInt(WorkerConfig.REST_ADVERTISED_PORT_CONFIG)
+        if (advertisedPort != null)
+            builder.port(advertisedPort)
+        else
+            builder.port(config.getInt(WorkerConfig.REST_PORT_CONFIG)!!)
+        return builder.build()
     }
 }
