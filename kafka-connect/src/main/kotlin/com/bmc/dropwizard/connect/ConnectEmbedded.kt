@@ -77,7 +77,6 @@ constructor(workerConfig: WorkerConfig, private val connectorConfigs: List<Map<S
         try {
             log.info("Kafka ConnectEmbedded starting")
 
-            worker.start()
             herder.start()
 
             log.info("Kafka ConnectEmbedded started")
@@ -110,8 +109,6 @@ constructor(workerConfig: WorkerConfig, private val connectorConfigs: List<Map<S
 
                 log.info("Kafka ConnectEmbedded stopping")
                 herder.stop()
-                worker.stop()
-
                 log.info("Kafka ConnectEmbedded stopped")
             }
         } finally {
