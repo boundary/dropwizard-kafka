@@ -1,6 +1,7 @@
 package com.bmc.dropwizard.connect
 
 
+import com.google.common.base.Throwables
 import io.dropwizard.lifecycle.Managed
 import org.apache.kafka.common.utils.SystemTime
 import org.apache.kafka.connect.runtime.ConnectorConfig
@@ -87,9 +88,10 @@ constructor(workerConfig: WorkerConfig, private val connectorConfigs: List<Map<S
                 herder.putConnectorConfig(name, connectorConfig, true, cb)
                 cb.get(REQUEST_TIMEOUT_MS.toLong(), TimeUnit.MILLISECONDS)
             }
-
         } catch (e: InterruptedException) {
             log.error("Starting interrupted ", e)
+            Thread.interrupted()
+            throw Throwables.propagate(e)
         } catch (e: ExecutionException) {
             log.error("Submitting connector config failed", e.cause)
         } catch (e: TimeoutException) {

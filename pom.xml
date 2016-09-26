@@ -12,13 +12,11 @@
         <module>kafka-connect</module>
     </modules>
 
-
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dw.version>1.0.0</dw.version>
-        <kotlin.version>1.0.3</kotlin.version>
+        <kotlin.version>1.0.4</kotlin.version>
         <kafka.connect.version>0.10.0.0</kafka.connect.version>
     </properties>
 
