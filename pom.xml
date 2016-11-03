@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.bmc.dropwizard</groupId>
     <artifactId>dropwizard-kafka</artifactId>
     <packaging>pom</packaging>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <modules>
         <module>kafka-connect</module>
     </modules>
@@ -202,7 +200,7 @@
                         <id>enforce</id>
                         <configuration>
                             <rules>
-                                <DependencyConvergence/>
+                                <DependencyConvergence />
                                 <requireReleaseDeps>
                                     <message>No Snapshots Allowed!</message>
                                     <failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
@@ -242,6 +240,6 @@
         <url>https://github.com/boundary/dropwizard-kafka</url>
         <connection>scm:git:ssh://git@github.com/boundary/dropwizard-kafka.git</connection>
         <developerConnection>scm:git:git@github.com:boundary/dropwizard-kafka.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>dropwizard-kafka-0.1</tag>
     </scm>
 </project>
