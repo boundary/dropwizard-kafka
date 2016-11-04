@@ -6,6 +6,11 @@
     <artifactId>dropwizard-kafka</artifactId>
     <packaging>pom</packaging>
     <version>0.2-SNAPSHOT</version>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Some utilities for embedding kafka-connect within dropwizard.</description>
+    <url>https://github.com/boundary/dropwizard-kafka</url>
+
     <modules>
         <module>kafka-connect</module>
     </modules>
