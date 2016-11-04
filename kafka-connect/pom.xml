@@ -6,6 +6,10 @@
         <version>0.9-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <name>kafka-connect</name>
+    <description>Dropwizard Kafka integration</description>
+    <url>https://github.com/boundary/dropwizard-kafka/tree/master/kafka-connect</url>
+    <packaging>pom</packaging>
 
     <artifactId>kafka-connect</artifactId>
 
