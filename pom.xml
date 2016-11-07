@@ -5,7 +5,7 @@
     <groupId>com.bmc.dropwizard</groupId>
     <artifactId>dropwizard-kafka</artifactId>
     <packaging>pom</packaging>
-    <version>0.15</version>
+    <version>0.16-SNAPSHOT</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Some utilities for embedding kafka-connect within dropwizard.</description>
@@ -274,7 +274,7 @@
         <url>https://github.com/boundary/dropwizard-kafka</url>
         <connection>scm:git:ssh://git@github.com/boundary/dropwizard-kafka.git</connection>
         <developerConnection>scm:git:git@github.com:boundary/dropwizard-kafka.git</developerConnection>
-        <tag>dropwizard-kafka-0.15</tag>
+        <tag>dropwizard-kafka-0.2</tag>
     </scm>
 
     <profiles>
