@@ -16,6 +16,9 @@ import org.apache.kafka.connect.runtime.standalone.StandaloneConfig
 import org.hibernate.validator.constraints.NotEmpty
 import java.util.*
 
+/**
+ *  Kafka Connection Configuration
+ */
 class ConnectConfiguration {
 
     enum class MODE {

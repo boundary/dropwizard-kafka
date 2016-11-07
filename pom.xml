@@ -249,6 +249,7 @@
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
+                        <phase>process-sources</phase>
                         <goals>
                             <goal>dokka</goal>
                         </goals>
